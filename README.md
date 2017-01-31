@@ -33,3 +33,10 @@ This allows multiple benefits:
 - PR sent to [poc-jenkinsagents-dockerswarm](https://github.com/gfonk/poc-jenkinsagents-dockerswarm)
   - PR(s) should have everything that anyone would need to run the POC (e.g. scripts, docker files, references), please do not included Binaries.
 
+
+- - -
+
+### Appendum/Changes
+
+- Language of the project doesn't really matter.  Feel free to use python.  However replace *Build* stage, as *Package* stage.
+
