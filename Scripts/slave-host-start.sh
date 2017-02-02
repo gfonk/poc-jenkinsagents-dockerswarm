@@ -26,11 +26,11 @@ then
     exit 1
 fi
 
-STOPPED_WORKERS=$(${DOCKER_MACHINE_COMMAND} ls -q --filter "name=worker-.*" --filter "state=Stopped")
+STOPPED_WORKERS=($(${DOCKER_MACHINE_COMMAND} ls -q --filter "name=worker-.*" --filter "state=Stopped"))
 
 if [[ "${STOPPED_WORKERS}" !=  "" ]]
 then
-    STOPPED_WORKER=($(${STOPPED_WORKERS})[0])
+    STOPPED_WORKER=${STOPPED_WORKERS[0]}
     ${DOCKER_MACHINE_COMMAND} start ${STOPPED_WORKER}
     ${DOCKER_MACHINE_COMMAND} regenerate-certs -f ${STOPPED_WORKER}
     ${DOCKER_MACHINE_COMMAND} ssh ${STOPPED_WORKER} sudo docker swarm join --token ${WORKER_TOKEN} ${MASTER_IP}:2377
