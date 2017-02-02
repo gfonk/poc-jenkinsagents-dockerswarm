@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -xe
 
+cd /var/jenkins_home
+
 RUNNING_MACHINES=$(docker-machine ls -q --filter "name=worker-.*" --filter "state=Running")
 
 for MACHINE in ${RUNNING_MACHINES};do
@@ -17,13 +19,15 @@ for MACHINE in ${RUNNING_MACHINES};do
                     docker-machine stop ${MACHINE}
                     rm ${MACHINE}
                 else
-                    COUNT_CHECKS=$(( ${COUNT_CHECKS} + 1 ))
-                    echo COUNT_CHECKS > ${MACHINE}
+                    echo $(( ${COUNT_CHECKS} + 1 )) > ${MACHINE}
                 fi
             else
                 echo 1 > ${MACHINE}
             fi
         else
-            rm ${MACHINE}
+            if [[ -f ${MACHINE} ]]
+            then
+                rm ${MACHINE}
+            fi
         fi
 done

@@ -35,11 +35,6 @@ JENKINS_IP=$(${DM_SSH} sudo docker swarm join-token worker|tail -2|head -1|sed -
 ACCESS_KEY_ID=$(cat ../credentials|grep key_id|sed -r 's/^.*= (.*)$/\1/')
 SECRET_ACCESS_KEY=$(cat ../credentials|grep secret_access|sed -r 's/^.*= (.*)$/\1/')
 
-#echo ${WORKER_TOKEN} > worker_token.txt
-#echo ${MASTER_IP} > master_ip.txt
-#echo ${JENKINS_IP} > jenkins_ip.txt
-#echo ${JENKINS_PORT} > jenkins_port.txt
-
 ${DM_SSH} "echo ${WORKER_TOKEN}|sudo docker secret create worker-token -"
 ${DM_SSH} "echo ${MASTER_IP}|sudo docker secret create master-ip -"
 ${DM_SSH} "echo ${JENKINS_IP}|sudo docker secret create jenkins-ip -"
@@ -90,6 +85,7 @@ ${DM_SSH} sudo chmod +x /jenkins_home/slave-stop-cron.sh
 
 ${DM_SSH} "sudo docker service create --name jenkins-agent \
     --mount=type=bind,src=/workspace,dst=/workspace \
+    --mount type=bind,source=/var/run/docker.sock,target=/var/run/docker.sock \
     --constraint=node.role!=manager \
     --mode=global \
     -e COMMAND_OPTIONS=\"-master http://${JENKINS_IP}:${JENKINS_PORT}/ -username admin -password admin -labels 'swarm' -executors 5\" \
