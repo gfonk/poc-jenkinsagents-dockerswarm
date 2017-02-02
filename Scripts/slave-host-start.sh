@@ -45,4 +45,3 @@ else
     ${DM_SSH} sudo mkdir -p /workspace
     ${DM_SSH} sudo chmod 777 /workspace
 fi
-
