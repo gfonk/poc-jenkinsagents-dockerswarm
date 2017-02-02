@@ -1,0 +1,45 @@
+node('swarm'){
+
+  git "https://github.com/Brialius/maven-spring.git"
+
+  stage("Unit") {
+    env.JAVA_HOME="${tool 'java8'}"
+    env.PATH="${env.JAVA_HOME}/bin:${env.PATH}"
+    sh 'java -version'
+    withMaven(
+            maven: 'M3',
+            mavenLocalRepo: '.repository') {
+            sh "mvn clean install"
+    }
+  }
+
+  stage("Staging") {
+    try {
+    env.JAVA_HOME="${tool 'java8'}"
+    env.PATH="${env.JAVA_HOME}/bin:${env.PATH}"
+    sh 'java -version'
+        withMaven(
+            maven: 'M3',
+            mavenLocalRepo: '.repository') {
+                echo 'Deploying'
+    }
+    } catch(e) {
+      error "Staging failed"
+    } finally {
+      echo 'close all'
+    }
+  }
+
+  stage("Publish") {
+    archiveArtifacts 'target/*.jar'
+  }
+
+  stage("Prod-like") {
+    echo "A production-like cluster is yet to be created"
+    input 'Looks good?'
+  }
+
+  stage("Production") {
+    echo "A production cluster is yet to be created"
+  }
+}
